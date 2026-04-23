@@ -200,6 +200,26 @@ export default function VoorspelForm({
       {/* ── OPEN WEDSTRIJDEN ── */}
       {tab === "open" && (
         <div>
+          {openW.some((w) => !voorspelMap[w.id] && !clientSaved[w.id]) && (
+            <button
+              onClick={() => {
+                const first = openW.find((w) => !voorspelMap[w.id] && !clientSaved[w.id]);
+                if (first) {
+                  homeRefs.current[first.id]?.scrollIntoView({ behavior: "smooth", block: "center" });
+                  setTimeout(() => { homeRefs.current[first.id]?.focus(); homeRefs.current[first.id]?.select(); }, 300);
+                }
+              }}
+              style={{
+                width: "100%", marginBottom: "0.75rem",
+                background: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.35)",
+                borderRadius: 10, padding: "0.6rem 1rem",
+                color: "var(--goud)", fontWeight: 700, fontSize: "0.85rem",
+                cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem",
+              }}
+            >
+              ⚡ Ga naar eerste open voorspelling
+            </button>
+          )}
           {openW.length === 0 ? (
             <div className="kaart centreer" style={{ padding: "3rem" }}>
               <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>⏳</div>
