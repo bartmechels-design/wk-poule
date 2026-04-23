@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Teacher {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  school       String?
+  groups       Group[]
+  createdAt    DateTime @default(now())
+}
+
+model Group {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  name      String
+  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  teacherId String
+  students  Student[]
+  createdAt DateTime  @default(now())
+}
+
+model Student {
+  id                    String                 @id @default(cuid())
+  name                  String
+  group                 Group                  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId               String
+  predictions           Prediction[]
+  tournamentPredictions TournamentPrediction[]
+  totalPoints           Int                    @default(0)
+  createdAt             DateTime               @default(now())
+
+  @@unique([name, groupId])
+}
+
+model Match {
+  id          String       @id @default(cuid())
+  externalId  Int?         @unique
+  homeTeam    String
+  awayTeam    String
+  homeFlag    String
+  awayFlag    String
+  homeScore   Int?
+  awayScore   Int?
+  date        DateTime
+  stage       String       @default("GROUP")
+  round       String?
+  status      String       @default("SCHEDULED")
+  predictions Prediction[]
+  createdAt   DateTime     @default(now())
+}
+
+model Prediction {
+  id               String   @id @default(cuid())
+  student          Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId        String
+  match            Match    @relation(fields: [matchId], references: [id])
+  matchId          String
+  predictedWinner  String
+  predictedHome    Int
+  predictedAway    Int
+  points           Int      @default(0)
+  pointsBreakdown  String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([studentId, matchId])
+}
+
+model TournamentPrediction {
+  id        String   @id @default(cuid())
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId String
+  type      String
+  value     String
+  points    Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, type])
+}

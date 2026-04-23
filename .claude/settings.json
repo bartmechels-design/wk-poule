@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.wk2026voetbal.nl)",
+      "WebFetch(domain:worldcupwiki.com)",
+      "WebFetch(domain:intikkertje.nl)",
+      "WebFetch(domain:www.espn.nl)",
+      "Bash(npx tsx *)",
+      "Bash(vercel --yes)",
+      "Bash(2>&1)"
+    ]
+  }
+}
