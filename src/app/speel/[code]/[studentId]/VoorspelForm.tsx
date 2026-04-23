@@ -86,7 +86,9 @@ export default function VoorspelForm({
   const [wkWinnaar, setWkWinnaar] = useState(initWK ?? "");
   const [wkOpgeslagen, setWkOpgeslagen] = useState(false);
 
-  const openW = wedstrijden.filter((w) => openWedstrijdenIds.includes(w.id));
+  const openW = wedstrijden
+    .filter((w) => openWedstrijdenIds.includes(w.id))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Focus first home input on mount
   useEffect(() => {
@@ -151,12 +153,6 @@ export default function VoorspelForm({
     if (res.ok) setWkOpgeslagen(true);
   }
 
-  const rondes = openW.reduce<Record<string, Wedstrijd[]>>((acc, w) => {
-    const key = `${STAGE[w.stage] ?? w.stage}${w.round ? ` – ${w.round}` : ""}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(w);
-    return acc;
-  }, {});
 
   const [uitlegOpen, setUitlegOpen] = useState(false);
 
@@ -210,12 +206,8 @@ export default function VoorspelForm({
               <p className="tekst-dim">{t.noMatches}</p>
             </div>
           ) : (
-            Object.entries(rondes).map(([ronde, ws]) => (
-              <div key={ronde} style={{ marginBottom: "1.5rem" }}>
-                <div className="groep-header">{ronde}</div>
-
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                  {ws.map((w) => {
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {openW.map((w) => {
                     const s = getScore(w.id);
                     const status = opgeslagen[w.id];
                     const datum = new Date(w.date);
@@ -362,9 +354,7 @@ export default function VoorspelForm({
                       </div>
                     );
                   })}
-                </div>
               </div>
-            ))
           )}
         </div>
       )}
