@@ -24,10 +24,16 @@ export default async function GroepBeheerPage({
         include: { _count: { select: { predictions: true } } },
         orderBy: { name: "asc" },
       },
+      teachers: true,
     },
   });
 
-  if (!groep || groep.teacherId !== session.user.id) notFound();
+  if (!groep) notFound();
+
+  const isOwner = groep.teacherId === session.user.id;
+  const isCollaborator = groep.teachers.some(t => t.teacherId === session.user.id);
+
+  if (!isOwner && !isCollaborator) notFound();
 
   const aantalWedstrijden = await db.match.count();
   const wedstrijden = await db.match.findMany({
