@@ -13,11 +13,19 @@ export async function DELETE(
 
   const leerling = await db.student.findUnique({
     where: { id },
-    include: { group: true },
+    include: {
+      group: {
+        include: { teachers: true }
+      }
+    },
   });
 
   if (!leerling) return NextResponse.json({ error: "Niet gevonden" }, { status: 404 });
-  if (leerling.group.teacherId !== session.user.id) {
+
+  const isOwner = leerling.group.teacherId === session.user.id;
+  const isCollaborator = leerling.group.teachers.some(t => t.teacherId === session.user.id);
+
+  if (!isOwner && !isCollaborator) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 403 });
   }
 

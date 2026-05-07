@@ -9,23 +9,36 @@ datasource db {
 }
 
 model Teacher {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String         @id @default(cuid())
+  email        String         @unique
   passwordHash String
   name         String
   school       String?
   groups       Group[]
-  createdAt    DateTime @default(now())
+  sharedGroups GroupTeacher[]
+  createdAt    DateTime       @default(now())
 }
 
 model Group {
-  id        String    @id @default(cuid())
-  code      String    @unique
+  id        String         @id @default(cuid())
+  code      String         @unique
   name      String
-  teacher   Teacher   @relation(fields: [teacherId], references: [id])
+  teacher   Teacher        @relation(fields: [teacherId], references: [id])
   teacherId String
   students  Student[]
-  createdAt DateTime  @default(now())
+  teachers  GroupTeacher[]
+  createdAt DateTime       @default(now())
+}
+
+model GroupTeacher {
+  id        String   @id @default(cuid())
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId   String
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId String
+  createdAt DateTime @default(now())
+
+  @@unique([groupId, teacherId])
 }
 
 model Student {

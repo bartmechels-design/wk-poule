@@ -3,17 +3,33 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import NieuweGroepForm from "./NieuweGroepForm";
+import JoinGroupForm from "./JoinGroupForm";
 import CopyCodeButton from "./CopyCodeButton";
 
 export default async function DashboardPage() {
   const session = await auth();
   if (!session) redirect("/auth/login");
 
-  const groepen = await db.group.findMany({
+  const ownGroepen = await db.group.findMany({
     where: { teacherId: session.user.id },
     include: { _count: { select: { students: true } } },
     orderBy: { createdAt: "desc" },
   });
+
+  const sharedGroepen = await db.groupTeacher.findMany({
+    where: { teacherId: session.user.id },
+    include: {
+      group: {
+        include: { _count: { select: { students: true } } }
+      }
+    },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const groepen = [
+    ...ownGroepen,
+    ...sharedGroepen.map(sg => sg.group)
+  ].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   return (
     <main style={{ minHeight: "100vh", padding: "0" }}>
@@ -39,6 +55,15 @@ export default async function DashboardPage() {
         <div className="kaart anim-fade" style={{ marginBottom: "2rem" }}>
           <h2 style={{ marginBottom: "1rem", fontSize: "1rem" }}>➕ Nieuwe klas aanmaken</h2>
           <NieuweGroepForm />
+        </div>
+
+        {/* Bestaande groep bijtreden */}
+        <div className="kaart anim-fade" style={{ marginBottom: "2rem" }}>
+          <h2 style={{ marginBottom: "1rem", fontSize: "1rem" }}>🔗 Deelnemen aan bestaande klas</h2>
+          <p className="tekst-dim" style={{ fontSize: "0.85rem", marginBottom: "0.75rem" }}>
+            Vraag een klascode aan de eigenaar en voer deze in om samen te werken aan dezelfde klas.
+          </p>
+          <JoinGroupForm />
         </div>
 
         {/* Groepen */}

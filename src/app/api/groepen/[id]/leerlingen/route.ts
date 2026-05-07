@@ -28,8 +28,19 @@ export async function POST(
     return NextResponse.json({ error: "Naam is verplicht" }, { status: 400 });
   }
 
-  const groep = await db.group.findUnique({ where: { id } });
-  if (!groep || groep.teacherId !== session.user.id) {
+  const groep = await db.group.findUnique({
+    where: { id },
+    include: { teachers: true }
+  });
+
+  if (!groep) {
+    return NextResponse.json({ error: "Groep niet gevonden" }, { status: 404 });
+  }
+
+  const isOwner = groep.teacherId === session.user.id;
+  const isCollaborator = groep.teachers.some(t => t.teacherId === session.user.id);
+
+  if (!isOwner && !isCollaborator) {
     return NextResponse.json({ error: "Geen toegang" }, { status: 403 });
   }
 
