@@ -89,6 +89,14 @@ export default async function GroepBeheerPage({
           </div>
         </div>
 
+        {/* Leerlingen */}
+        <div className="kaart-dark anim-in" style={{ marginBottom: "1.5rem" }}>
+          <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem" }}>
+            👨‍🎓 Leerlingen beheren <span className="tekst-dim" style={{ fontWeight: 400 }}>({groep.students.length})</span>
+          </h2>
+          <LeerlingenBeheer groepId={groep.id} leerlingen={groep.students} />
+        </div>
+
         {/* Snelle links */}
         <div style={{ display: "flex", gap: "0.6rem", flexWrap: "wrap", marginBottom: "2rem" }}>
           <Link href={`/klassement/${groep.code}`}><button className="btn btn-ghost btn-sm">🏆 Klassement</button></Link>
@@ -116,14 +124,6 @@ export default async function GroepBeheerPage({
             🔄 Automatisch synchroniseren <span className="tekst-dim" style={{ fontWeight: 400 }}>({aantalWedstrijden})</span>
           </h2>
           <WedstrijdenSync aantalWedstrijden={aantalWedstrijden} />
-        </div>
-
-        {/* Leerlingen */}
-        <div className="kaart-dark anim-in" style={{ animationDelay: "0.2s" }}>
-          <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem" }}>
-            👨‍🎓 Leerlingen beheren <span className="tekst-dim" style={{ fontWeight: 400 }}>({groep.students.length})</span>
-          </h2>
-          <LeerlingenBeheer groepId={groep.id} leerlingen={groep.students} />
         </div>
       </div>
     </main>
