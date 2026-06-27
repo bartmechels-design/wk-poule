@@ -18,7 +18,12 @@ export default async function KlassementPage({ params }: { params: Promise<{ cod
       },
     }),
     db.match.findMany({
-      where: { externalId: { not: null } },
+      where: {
+        OR: [
+          { externalId: { not: null } },  // Van API
+          { stage: { in: ["ROUND_OF_32", "ROUND_OF_16", "QUARTER_FINAL", "SEMI_FINAL", "FINAL"] } }  // Gegenereerde knockout
+        ]
+      },
       orderBy: { date: "asc" },
       select: { id: true, homeTeam: true, awayTeam: true, homeScore: true, awayScore: true, stage: true, round: true, status: true, date: true },
     }),

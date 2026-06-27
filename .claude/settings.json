@@ -23,7 +23,8 @@
       "Bash(curl -X POST http://localhost:3000/api/wedstrijden/generate-knockout)",
       "Bash(curl -s \"http://localhost:3000/klassement/test\")",
       "Bash(cd \"c:\\\\Users\\\\Familie Mechels\\\\Claude Projecten\\\\WK poule\" && rm -f *.mjs check-*.mjs test-*.mjs analyze-*.mjs)",
-      "Bash(git commit -m 'Auth check restored, cleanup test files *)"
+      "Bash(git commit -m 'Auth check restored, cleanup test files *)",
+      "Bash(git commit -m 'Fix: Toon gegenereerde knockout wedstrijden \\(RO32+\\) *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Familie Mechels\\.claude\\projects\\c--Users-Familie-Mechels-Claude-Projecten-WK-poule\\memory",

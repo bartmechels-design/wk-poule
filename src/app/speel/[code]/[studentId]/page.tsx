@@ -20,7 +20,15 @@ export default async function VoorspelPage({
 
   const nu = new Date();
 
-  const wedstrijden = await db.match.findMany({ where: { externalId: { not: null } }, orderBy: { date: "asc" } });
+  const wedstrijden = await db.match.findMany({
+    where: {
+      OR: [
+        { externalId: { not: null } },  // Van API
+        { stage: { in: ["ROUND_OF_32", "ROUND_OF_16", "QUARTER_FINAL", "SEMI_FINAL", "FINAL"] } }  // Gegenereerde knockout
+      ]
+    },
+    orderBy: { date: "asc" }
+  });
 
   const voorspellingen = await db.prediction.findMany({
     where: { studentId },
