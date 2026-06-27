@@ -3,10 +3,6 @@ import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { WK_TEAMS } from "@/lib/wk-data";
 
-// WK 2026: 12 groepen (A-L), RO32 pairings
-// A1 vs B2, A2 vs B1, C1 vs D2, C2 vs D1, E1 vs F2, E2 vs F1, G1 vs H2, G2 vs H1,
-// I1 vs J2, I2 vs J1, K1 vs L2, K2 vs L1
-// Dan de 8 beste 3de-plaats teams
 const ROUND_OF_32_PAIRINGS = [
   { match: 1, group1: "A", pos1: 1, group2: "B", pos2: 2 },
   { match: 2, group1: "A", pos1: 2, group2: "B", pos2: 1 },
@@ -20,7 +16,6 @@ const ROUND_OF_32_PAIRINGS = [
   { match: 10, group1: "I", pos1: 2, group2: "J", pos2: 1 },
   { match: 11, group1: "K", pos1: 1, group2: "L", pos2: 2 },
   { match: 12, group1: "K", pos1: 2, group2: "L", pos2: 1 },
-  // Matches 13-16: beste 3de-plaats teams (dynamisch bepaald)
 ];
 
 type GroupStats = { team: string; pts: number; gd: number; gf: number };
@@ -29,13 +24,11 @@ async function getGroupStandings(): Promise<Record<string, GroupStats[]>> {
   const groups: Record<string, string[]> = {};
   const standings: Record<string, Record<string, GroupStats>> = {};
 
-  // Organiseer teams per groep
   WK_TEAMS.forEach((team) => {
     if (!groups[team.group]) groups[team.group] = [];
     groups[team.group].push(team.name);
   });
 
-  // Bereken stand per groep
   for (const [groupKey, teams] of Object.entries(groups)) {
     if (!standings[groupKey]) standings[groupKey] = {};
 
@@ -51,9 +44,7 @@ async function getGroupStandings(): Promise<Record<string, GroupStats[]>> {
         }),
       ]);
 
-      let pts = 0,
-        gf = 0,
-        ga = 0;
+      let pts = 0, gf = 0, ga = 0;
 
       homeMatches.forEach((m) => {
         if (m.homeScore === null || m.awayScore === null) return;
@@ -75,7 +66,6 @@ async function getGroupStandings(): Promise<Record<string, GroupStats[]>> {
     }
   }
 
-  // Sort per groep
   const sorted: Record<string, GroupStats[]> = {};
   for (const [group, teamStats] of Object.entries(standings)) {
     sorted[group] = Object.values(teamStats).sort(
@@ -86,15 +76,34 @@ async function getGroupStandings(): Promise<Record<string, GroupStats[]>> {
   return sorted;
 }
 
+async function isGroupComplete(groupTeams: string[]): Promise<boolean> {
+  for (const team of groupTeams) {
+    const totalMatches = await db.match.count({
+      where: { stage: "GROUP", OR: [{ homeTeam: team }, { awayTeam: team }] },
+    });
+    if (totalMatches < 3) return false;
+  }
+  return true;
+}
+
 async function generateRound32Matches() {
   const standings = await getGroupStandings();
+  const groups: Record<string, string[]> = {};
   const matches: any[] = [];
   const qualified: Set<string> = new Set();
 
-  // Top 2 van elke groep
-  for (const pairing of ROUND_OF_32_PAIRINGS.slice(0, 12)) {
-    const team1 = standings[pairing.group1]?.[pairing.pos1 - 1]?.team;
-    const team2 = standings[pairing.group2]?.[pairing.pos2 - 1]?.team;
+  WK_TEAMS.forEach((team) => {
+    if (!groups[team.group]) groups[team.group] = [];
+    groups[team.group].push(team.name);
+  });
+
+  // Top 2 van elke groep (ALLEEN als groep compleet is)
+  for (const pairing of ROUND_OF_32_PAIRINGS) {
+    const isGroup1Complete = await isGroupComplete(groups[pairing.group1]);
+    const isGroup2Complete = await isGroupComplete(groups[pairing.group2]);
+
+    const team1 = isGroup1Complete ? standings[pairing.group1]?.[pairing.pos1 - 1]?.team : null;
+    const team2 = isGroup2Complete ? standings[pairing.group2]?.[pairing.pos2 - 1]?.team : null;
 
     if (team1) qualified.add(team1);
     if (team2) qualified.add(team2);
@@ -108,28 +117,43 @@ async function generateRound32Matches() {
     });
   }
 
-  // Top 4 van de 3de-plaats
-  const thirdPlacedTeams = Object.entries(standings)
-    .map(([group, stats]) => ({ group, team: stats[2], position: 3 }))
-    .filter((x) => x.team)
-    .sort((a, b) => b.team.pts - a.team.pts || b.team.gd - a.team.gd)
-    .slice(0, 4);
+  // Top 4 van 3de plaats (alleen als alle groepen compleet zijn)
+  const allGroupsComplete = await Promise.all(
+    Object.values(groups).map(g => isGroupComplete(g))
+  ).then(arr => arr.every(v => v));
 
-  // Match up 3de-plaats teams
-  for (let i = 0; i < thirdPlacedTeams.length; i += 2) {
-    const team1 = thirdPlacedTeams[i]?.team?.team;
-    const team2 = thirdPlacedTeams[i + 1]?.team?.team;
+  if (allGroupsComplete) {
+    const thirdPlacedTeams = Object.entries(standings)
+      .map(([group, stats]) => ({ group, team: stats[2], position: 3 }))
+      .filter((x) => x.team)
+      .sort((a, b) => b.team.pts - a.team.pts || b.team.gd - a.team.gd)
+      .slice(0, 4);
 
-    if (team1) qualified.add(team1);
-    if (team2) qualified.add(team2);
+    for (let i = 0; i < thirdPlacedTeams.length; i += 2) {
+      const team1 = thirdPlacedTeams[i]?.team?.team;
+      const team2 = thirdPlacedTeams[i + 1]?.team?.team;
 
-    matches.push({
-      matchId: `ro32_${13 + i / 2}`,
-      homeTeam: team1 || null,
-      awayTeam: team2 || null,
-      matchNumber: 13 + Math.floor(i / 2),
-      stage: "ROUND_OF_32",
-    });
+      if (team1) qualified.add(team1);
+      if (team2) qualified.add(team2);
+
+      matches.push({
+        matchId: `ro32_${13 + i / 2}`,
+        homeTeam: team1 || null,
+        awayTeam: team2 || null,
+        matchNumber: 13 + Math.floor(i / 2),
+        stage: "ROUND_OF_32",
+      });
+    }
+  } else {
+    for (let i = 0; i < 4; i++) {
+      matches.push({
+        matchId: `ro32_${13 + i}`,
+        homeTeam: null,
+        awayTeam: null,
+        matchNumber: 13 + i,
+        stage: "ROUND_OF_32",
+      });
+    }
   }
 
   return { matches, qualified };
@@ -141,8 +165,7 @@ export async function POST() {
 
   try {
     const { matches: ro32Matches, qualified } = await generateRound32Matches();
-    let created = 0,
-      updated = 0;
+    let created = 0, updated = 0;
 
     for (const match of ro32Matches) {
       const existing = await db.match.findFirst({

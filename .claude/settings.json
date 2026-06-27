@@ -24,7 +24,9 @@
       "Bash(curl -s \"http://localhost:3000/klassement/test\")",
       "Bash(cd \"c:\\\\Users\\\\Familie Mechels\\\\Claude Projecten\\\\WK poule\" && rm -f *.mjs check-*.mjs test-*.mjs analyze-*.mjs)",
       "Bash(git commit -m 'Auth check restored, cleanup test files *)",
-      "Bash(git commit -m 'Fix: Toon gegenereerde knockout wedstrijden \\(RO32+\\) *)"
+      "Bash(git commit -m 'Fix: Toon gegenereerde knockout wedstrijden \\(RO32+\\) *)",
+      "Bash(rm -f check-db.mjs verify-standings.mjs)",
+      "Bash(git commit -m 'Fix: Alleen gekwalificeerden met compleet poulestand in RO32 *)"
     ],
     "additionalDirectories": [
       "c:\\Users\\Familie Mechels\\.claude\\projects\\c--Users-Familie-Mechels-Claude-Projecten-WK-poule\\memory",

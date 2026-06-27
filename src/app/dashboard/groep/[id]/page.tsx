@@ -51,9 +51,7 @@ export default async function GroepBeheerPage({
           <span style={{ fontSize: "1.3rem" }}>⚽</span>
           <span style={{ fontWeight: 900, color: "var(--goud)", fontSize: "1.1rem", letterSpacing: "-0.02em" }}>WK Poule 2026</span>
         </div>
-        <Link href="/dashboard">
-          <DashboardBtn />
-        </Link>
+        <DashboardBtn />
       </div>
 
       <div style={{ maxWidth: 820, margin: "0 auto", padding: "2rem 1rem" }}>
