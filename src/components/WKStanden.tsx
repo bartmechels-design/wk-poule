@@ -12,10 +12,10 @@ export type WedstrijdStand = {
 
 type TeamStats = { team: string; mp: number; w: number; d: number; l: number; gf: number; ga: number; gd: number; pts: number };
 
-const STAGE_NL: Record<string, string> = { GROUP: "Groepsfase", ROUND_OF_32: "Ronde van 32", ROUND_OF_16: "Achtste finale", QUARTER_FINAL: "Kwartfinale", SEMI_FINAL: "Halve finale", FINAL: "Finale" };
-const STAGE_PAP: Record<string, string> = { GROUP: "Fase di Grupo", ROUND_OF_32: "Ronde di 32", ROUND_OF_16: "Okto final", QUARTER_FINAL: "Kuart final", SEMI_FINAL: "Semi final", FINAL: "Final" };
+const STAGE_NL: Record<string, string> = { GROUP: "Groepsfase", ROUND_OF_32: "Ronde van 32", ROUND_OF_16: "Achttiende finales", QUARTER_FINAL: "Kwartfinales", SEMI_FINAL: "Halve finales", FINAL: "Finale" };
+const STAGE_PAP: Record<string, string> = { GROUP: "Fase di Grupo", ROUND_OF_32: "Ronde di 32", ROUND_OF_16: "18 final", QUARTER_FINAL: "Kuart final", SEMI_FINAL: "Semi final", FINAL: "Final" };
 const STAGE_EN: Record<string, string> = { GROUP: "Group Stage", ROUND_OF_32: "Round of 32", ROUND_OF_16: "Round of 16", QUARTER_FINAL: "Quarter Final", SEMI_FINAL: "Semi Final", FINAL: "Final" };
-const STAGE_ES: Record<string, string> = { GROUP: "Fase de grupos", ROUND_OF_32: "Ronda de 32", ROUND_OF_16: "Octavos de final", QUARTER_FINAL: "Cuartos de final", SEMI_FINAL: "Semifinal", FINAL: "Final" };
+const STAGE_ES: Record<string, string> = { GROUP: "Fase de grupos", ROUND_OF_32: "Ronda de 32", ROUND_OF_16: "Dieciseisavos", QUARTER_FINAL: "Cuartos de final", SEMI_FINAL: "Semifinal", FINAL: "Final" };
 const STAGE_ORDER = ["ROUND_OF_32", "ROUND_OF_16", "QUARTER_FINAL", "SEMI_FINAL", "FINAL"];
 
 function berekenStanden(wedstrijden: WedstrijdStand[]): Record<string, TeamStats[]> {

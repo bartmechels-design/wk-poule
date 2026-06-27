@@ -60,6 +60,18 @@ export async function POST() {
       }
     }
 
+    // Genereer knock-out matches op basis van gekwalificeerden
+    try {
+      const knockoutRes = await fetch(`${process.env.NEXTAUTH_URL || "http://localhost:3000"}/api/wedstrijden/generate-knockout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const knockoutData = await knockoutRes.json();
+      console.log("Knockout updates:", knockoutData);
+    } catch (e) {
+      console.error("Kon knock-out matches niet genereren:", e);
+    }
+
     return NextResponse.json({
       message: `${nieuw} nieuwe wedstrijden toegevoegd, ${bijgewerkt} wedstrijden bijgewerkt`,
       nieuw,
