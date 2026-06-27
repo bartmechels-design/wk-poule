@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLang } from "@/components/LanguageProvider";
 import { HomeBtn, BackBtn } from "@/components/NavBar";
 import WKStanden, { type WedstrijdStand } from "@/components/WKStanden";
+import DagwinnaarCard from "@/components/DagwinnaarCard";
 
 type Student = { id: string; name: string; totalPoints: number; _count: { predictions: number } };
 
@@ -50,6 +51,9 @@ export default function KlassementClient({ groepNaam, groepCode, groepId, studen
         {/* ── KLASSEMENT ── */}
         {tab === "klassement" && (
           <>
+            {/* Dagwinnaar */}
+            <DagwinnaarCard groepCode={groepCode} />
+
             {/* Podium top 3 */}
             {students.length >= 1 && (
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1.1fr 1fr", gap: "0.75rem", marginBottom: "2rem", alignItems: "flex-end" }}>
