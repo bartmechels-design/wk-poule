@@ -38,6 +38,8 @@ export default async function GroepBeheerPage({
   const aantalWedstrijden = await db.match.count();
   const wedstrijden = await db.match.findMany({
     where: {
+      homeTeam: { not: null },
+      awayTeam: { not: null },
       OR: [
         { externalId: { not: null } },  // Van API
         { stage: { in: ["ROUND_OF_32", "ROUND_OF_16", "QUARTER_FINAL", "SEMI_FINAL", "FINAL"] } }  // Gegenereerde knockout
