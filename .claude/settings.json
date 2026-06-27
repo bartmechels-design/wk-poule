@@ -15,10 +15,19 @@
       "Bash(npx prisma *)",
       "WebFetch(domain:www.fifa.com)",
       "Bash(git add *)",
-      "Bash(git commit -m 'Dynamische knock-out bracket generation voor WK 2026 format *)"
+      "Bash(git commit -m 'Dynamische knock-out bracket generation voor WK 2026 format *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -X POST http://localhost:3000/api/wedstrijden/generate-knockout -H 'Cookie: __Secure-next-auth.session-token=fake-token' -H 'Content-Type: application/json')",
+      "Bash(curl -X POST http://localhost:3000/api/wedstrijden/generate-knockout -H 'Content-Type: application/json')",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -X POST http://localhost:3000/api/wedstrijden/generate-knockout)",
+      "Bash(curl -s \"http://localhost:3000/klassement/test\")",
+      "Bash(cd \"c:\\\\Users\\\\Familie Mechels\\\\Claude Projecten\\\\WK poule\" && rm -f *.mjs check-*.mjs test-*.mjs analyze-*.mjs)",
+      "Bash(git commit -m 'Auth check restored, cleanup test files *)"
     ],
     "additionalDirectories": [
-      "c:\\Users\\Familie Mechels\\.claude\\projects\\c--Users-Familie-Mechels-Claude-Projecten-WK-poule\\memory"
+      "c:\\Users\\Familie Mechels\\.claude\\projects\\c--Users-Familie-Mechels-Claude-Projecten-WK-poule\\memory",
+      "C:\\Users\\Familie Mechels\\Claude Projecten\\WK poule"
     ]
   }
 }
