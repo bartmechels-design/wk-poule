@@ -27,7 +27,12 @@
       "Bash(git commit -m 'Fix: Toon gegenereerde knockout wedstrijden \\(RO32+\\) *)",
       "Bash(rm -f check-db.mjs verify-standings.mjs)",
       "Bash(git commit -m 'Fix: Alleen gekwalificeerden met compleet poulestand in RO32 *)",
-      "Bash(git commit -m 'Toon RO32+ wedstrijden ook op groepbeheer pagina *)"
+      "Bash(git commit -m 'Toon RO32+ wedstrijden ook op groepbeheer pagina *)",
+      "Bash(curl -s -H \"X-Auth-Token: c7edc04d5ab34fd8bee09f13f39c6953\" \"https://api.football-data.org/v4/competitions/WC/matches?season=2026\")",
+      "Bash(curl -i -H \"X-Auth-Token: c7edc04d5ab34fd8bee09f13f39c6953\" \"https://api.football-data.org/v4/competitions/WC/matches?season=2026\")",
+      "Bash(npm --version)",
+      "Bash(certutil -generateSSTFromWU root.sst)",
+      "Bash(pkill -f \"npm run dev\")"
     ],
     "additionalDirectories": [
       "c:\\Users\\Familie Mechels\\.claude\\projects\\c--Users-Familie-Mechels-Claude-Projecten-WK-poule\\memory",

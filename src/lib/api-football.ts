@@ -106,10 +106,17 @@ export async function fetchWKMatches(): Promise<{
 }[]> {
   if (!API_KEY) throw new Error("FOOTBALL_API_KEY is niet ingesteld");
 
-  const res = await fetch(`${BASE_URL}/competitions/WC/matches?season=2026`, {
+  // Workaround for SSL certificate issues on Windows
+  const fetchOptions: any = {
     headers: { "X-Auth-Token": API_KEY },
     next: { revalidate: 300 },
-  });
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+  }
+
+  const res = await fetch(`${BASE_URL}/competitions/WC/matches?season=2026`, fetchOptions);
 
   if (!res.ok) {
     const text = await res.text();
