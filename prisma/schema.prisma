@@ -20,14 +20,17 @@ model Teacher {
 }
 
 model Group {
-  id        String         @id @default(cuid())
-  code      String         @unique
-  name      String
-  teacher   Teacher        @relation(fields: [teacherId], references: [id])
-  teacherId String
-  students  Student[]
-  teachers  GroupTeacher[]
-  createdAt DateTime       @default(now())
+  id               String         @id @default(cuid())
+  code             String         @unique
+  name             String
+  teacher          Teacher        @relation(fields: [teacherId], references: [id])
+  teacherId        String
+  students         Student[]
+  teachers         GroupTeacher[]
+  dailyWinnerId    String?
+  dailyWinnerDate  DateTime?
+  dailyWinnerName  String?
+  createdAt        DateTime       @default(now())
 }
 
 model GroupTeacher {

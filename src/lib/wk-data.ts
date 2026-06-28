@@ -181,8 +181,9 @@ const FLAG_ISO2: Record<string, string> = {
 };
 
 export function getFlagUrl(teamName: string): string {
+  if (!teamName) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23333' width='40' height='40'/%3E%3C/svg%3E";
   const iso2 = FLAG_ISO2[teamName];
-  if (!iso2) return "";
+  if (!iso2) return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect fill='%23333' width='40' height='40'/%3E%3C/svg%3E";
   return `https://flagcdn.com/w40/${iso2}.png`;
 }
 

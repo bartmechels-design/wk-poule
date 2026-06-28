@@ -115,8 +115,10 @@ export default async function GroepBeheerPage({
           <h2 style={{ fontSize: "1rem", fontWeight: 700, marginBottom: "1rem" }}>
             ⚽ Uitslagen invoeren
           </h2>
-          <UitslagenBeheer wedstrijden={wedstrijden.map((w) => ({
+          <UitslagenBeheer wedstrijden={wedstrijden.filter((w) => w.homeTeam && w.awayTeam).map((w) => ({
             ...w,
+            homeTeam: w.homeTeam || "",
+            awayTeam: w.awayTeam || "",
             date: w.date.toISOString(),
             homeScore: w.homeScore ?? null,
             awayScore: w.awayScore ?? null,
